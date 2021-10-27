@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_list/add_book/add_book_page.dart';
 import 'package:sample_list/domain/book.dart';
+import 'package:sample_list/edit_book/edit_book_page.dart';
 
 import 'book_list_model.dart';
 
@@ -25,9 +26,47 @@ class BookListPage extends StatelessWidget {
 
             final List<Widget> widgets = books
                 .map(
-                  (book) => ListTile(
-                    title: Text(book.title),
-                    subtitle: Text(book.author),
+                  (book) => Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    child: ListTile(
+                      title: Text(book.title),
+                      subtitle: Text(book.author),
+                    ),
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: '編集',
+                        color: Colors.black45,
+                        icon: Icons.more_horiz,
+                        onTap: () async {
+                          //編集画面に遷移
+                          final String title = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditBookPage(book),
+                            ),
+                          );
+
+                          if (title != null) {
+                            final snackBar = SnackBar(
+                              backgroundColor: Colors.green,
+                              content: Text('$titleを編集しました'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+
+                          model.fetchBookList();
+                        },
+                      ),
+                      IconSlideAction(
+                        caption: '削除',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          //削除
+                        },
+                      ),
+                    ],
                   ),
                 )
                 .toList();
