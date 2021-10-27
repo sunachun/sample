@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample_list/add_book/add_book_page.dart';
 import 'package:sample_list/domain/book.dart';
 
 import 'book_list_model.dart';
@@ -35,11 +36,32 @@ class BookListPage extends StatelessWidget {
             );
           }),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: null,
-          tooltip: 'Increment',
-          child: Icon(Icons.add),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
+        floatingActionButton:
+            Consumer<BookListModel>(builder: (context, model, child) {
+          return FloatingActionButton(
+            onPressed: () async {
+              final bool added = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddBookPage(),
+                  fullscreenDialog: true,
+                ),
+              );
+
+              if (added != null && added) {
+                final snackBar = SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('本を追加しました'),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+
+              model.fetchBookList();
+            },
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          );
+        }), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
