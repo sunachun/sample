@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sample_list/add_book/add_book_page.dart';
 import 'package:sample_list/domain/book.dart';
 import 'package:sample_list/edit_book/edit_book_page.dart';
+import 'package:sample_list/login/login_page.dart';
 
 import 'book_list_model.dart';
 
@@ -15,6 +16,20 @@ class BookListPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('一覧'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () async {
+                final bool added = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: Center(
           child: Consumer<BookListModel>(builder: (context, model, child) {
@@ -83,6 +98,7 @@ class BookListPage extends StatelessWidget {
             Consumer<BookListModel>(builder: (context, model, child) {
           return FloatingActionButton(
             onPressed: () async {
+              //画面遷移
               final bool added = await Navigator.push(
                 context,
                 MaterialPageRoute(
